@@ -1,0 +1,25 @@
+.users-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.user-card {
+  padding: 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  word-break: break-word;
+}
+
+.user-card:hover {
+  opacity: 0.8;
+}
+
+.active {
+  background-color: #0aa03a;
+}
+
+.inactive {
+  background-color: #a9b6b4;
+}
