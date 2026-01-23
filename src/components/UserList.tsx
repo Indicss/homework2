@@ -7,14 +7,14 @@ function UserList() {
 
   useEffect(() => {
     fetch("https://gorest.co.in/public/v2/users")
-      .then(res => res.json())
+      .then((res) => res.json())
       .then((data: User[]) => setUsers(data))
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   }, []);
 
   return (
     <div className="users-grid">
-      {users.map(user => (
+      {users.map((user) => (
         <UserCard key={user.id} user={user} />
       ))}
     </div>
