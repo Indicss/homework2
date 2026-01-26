@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { User } from "../types/User";
+import { type User } from "../types/User";
 import UserCard from "./UserCard";
 
 function UserList() {
@@ -13,7 +13,7 @@ function UserList() {
   }, []);
 
   return (
-    <div className="users-grid">
+    <div className="grid gap-5 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
       {users.map((user) => (
         <UserCard key={user.id} user={user} />
       ))}

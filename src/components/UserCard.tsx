@@ -5,13 +5,25 @@ interface UserCardProps {
 }
 
 function UserCard({ user }: UserCardProps) {
+  const statusColor = user.status === "active" ? "bg-green-500" : "bg-gray-400";
+
   return (
-    <div className={`user-card ${user.status}`}>
-      <p>ID: {user.id}</p>
-      <p>Name: {user.name}</p>
-      <p>Email: {user.email}</p>
-      <p>Gender: {user.gender}</p>
-      <p>Status: {user.status}</p>
+    <div
+      className={`
+        ${statusColor}
+        p-5
+        rounded-xl
+        cursor-pointer
+        transition
+        hover:opacity-80
+        break-words
+      `}
+    >
+      <p className="font-bold">ID: {user.id}</p>
+      <p className="font-bold">Name: {user.name}</p>
+      <p className="font-bold">Email: {user.email}</p>
+      <p className="font-bold">Gender: {user.gender}</p>
+      <p className="font-bold">Status: {user.status}</p>
     </div>
   );
 }
