@@ -15,7 +15,7 @@ function UserCard({ user }: UserCardProps) {
         rounded-xl
         cursor-pointer
         transition
-        hover:opacity-80
+        hover:opacity-70
         break-words
       `}
     >
