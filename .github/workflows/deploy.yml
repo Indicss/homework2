@@ -24,7 +24,7 @@ jobs:
       - name: Build project
         run: |
           npm install
-          npm run build # sau comanda ta de build
+          npm run build
 
       - name: Deploy to Netlify
         env:
