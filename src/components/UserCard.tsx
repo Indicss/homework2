@@ -24,7 +24,6 @@ function UserCard({ user }: UserCardProps) {
       <p className="font-bold">Email: {user.email}</p>
       <p className="font-bold">Gender: {user.gender}</p>
       <p className="font-bold">Status: {user.status}</p>
-      <h1>asdfg</h1>
     </div>
   );
 }
