@@ -62,7 +62,7 @@ jobs:
           generate_release_notes: true
 
       - name: Deploy to Netlify (prod)
-        run: npx netlify deploy --prod --dir=build --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN --message "Release $GITHUB_REF_NAME"
+        run: npx netlify deploy --prod --dir=dist --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN --message "Release $GITHUB_REF_NAME"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
