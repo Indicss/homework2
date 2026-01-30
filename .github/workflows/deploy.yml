@@ -1,4 +1,8 @@
-name: Deploy
+name: Build, Create Docker Image, Deploy to Netlify and Create Release
+
+permissions:
+  contents: write
+  packages: write
 
 on:
   push:
@@ -6,29 +10,48 @@ on:
       - main
 
 jobs:
-  deploy:
+  package:
+    name: Publish Docker Image
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          node-version: "22"
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install Netlify CLI
-        run: npm install -g netlify-cli
+      - name: Build and push Docker image (latest)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}:latest
 
-      - name: Build project
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: package
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create SemVer tag
+        id: tag
         run: |
-          npm install
-          npm run build
+          TAG=v1.0.${{ github.run_number }}
+          echo "TAG=$TAG" >> $GITHUB_ENV
+          git tag $TAG
+          git push origin $TAG
 
-      - name: Deploy to Netlify
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        run: |
-          netlify deploy --prod --dir=dist
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.TAG }}
+          name: Release ${{ env.TAG }}
+          generate_release_notes: true
