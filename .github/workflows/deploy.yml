@@ -1,4 +1,4 @@
-name: Build, Create Docker Image, Deploy to Netlify and Create Release
+name: Publish Docker Image and Create Release
 
 permissions:
   contents: write
@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   package:
@@ -17,12 +18,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: indicss
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image (latest)
@@ -30,7 +33,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}:latest
+          tags: ghcr.io/indicss/homework2:latest
 
   release:
     name: Create GitHub Release
@@ -40,18 +43,20 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Create SemVer tag
         id: tag
         run: |
           TAG=v1.0.${{ github.run_number }}
-          echo "TAG=$TAG" >> $GITHUB_ENV
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
           git tag $TAG
           git push origin $TAG
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.TAG }}
-          name: Release ${{ env.TAG }}
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: Release ${{ steps.tag.outputs.tag }}
           generate_release_notes: true
