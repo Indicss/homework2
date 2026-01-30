@@ -56,8 +56,15 @@ jobs:
     needs: docker
     steps:
       - uses: actions/checkout@v4
-      - name: Trigger Netlify Build
-        run: npx netlify deploy --prod --build --message "Release $GITHUB_REF_NAME"
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy to Netlify
+        run: npx netlify deploy --prod --dir=dist --message "Release $GITHUB_REF_NAME"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
